@@ -30,13 +30,13 @@ div.invoice-info(ng-show='invoice')
     div.col-sm-2
       span {{ invoice.created_utc | date }} 
     div.col-xs-2
-      strong Total
+      strong Total (USD/Satoshis)
     div.col-sm-2
-      span {{ invoice.total | currency }}
+      span {{ invoice.total | currency }} / {{ getSatoshis(invoice.total) | number }}
     div.col-xs-2
-      strong Balance
+      strong Balance (USD/Satoshis)
     div.col-sm-2
-      span {{ invoice.getBalance() | currency }}
+      span {{ invoice.getBalance() | currency }} / {{ getSatoshis(invoice.getBalance()) | number }}
 div.make-payment
   h3 Make a payment
   div.container.well
