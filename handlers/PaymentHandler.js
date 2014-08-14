@@ -28,6 +28,11 @@ module.exports = {
       
       var totalPayments = payment.amount + invoice.payments.reduce(function(t,c,i,a) { return t + c['amount']; }, 0);
       
+      if (payment.amount <= 0) {
+        res.json({message: 'Payment rejected (too low)'});
+        return;
+      }
+      
       if (totalPayments > invoice.total){
         res.json({ message: 'Payment rejected (too high)'});
         return;
