@@ -1,0 +1,59 @@
+div.new-invoice(ng-hide='invoice')
+  h3 Create an invoice
+  div.container.well
+    div.row
+      div.col-xs-3
+        label(for='total') Total(USD)
+      div.col-sm-3
+        input(type='text',id='total',name='total',data-ng-model='newInvoice.total',decimal-input)
+      div.col-xs-3
+        label(for='expires_at') Expy
+      div.col-sm-3
+        input(type='text',id='expires_at',name='expires_at',data-ng-model='newInvoice.expires_at',jqdatepicker='')
+    div.row
+      div.col-xs-3
+        label(for='wif') WIF
+      div.col-sm-3
+        input(type='text' disabled, placeholder='Using server wallet')
+    div.row
+      div.col-sm-12
+        p &nbsp;
+    div.row
+      div.col-sm-12
+        input(type='button',value='Create Invoice',ng-click='createInvoice()')
+
+div.invoice-info(ng-show='invoice')
+  h3 Invoice ({{ invoice.getStatus() }})
+  div.row
+    div.col-xs-2
+      strong Date
+    div.col-sm-2
+      span {{ invoice.created_utc | date }} 
+    div.col-xs-2
+      strong Total
+    div.col-sm-2
+      span {{ invoice.total | currency }}
+    div.col-xs-2
+      strong Balance
+    div.col-sm-2
+      span {{ invoice.getBalance() | currency }}
+div.make-payment
+  h3 Make a payment
+  div.container.well
+    div.row
+      div.col-xs-3
+        label(for='amount') Amount
+      div.col-sm-3
+        input(type='text',id='amount',name='amount',data-ng-model='newPayment.amount',decimal-input)
+      div.col-xs-3
+        label(for='tx_hash') Tx Hash
+      div.col-sm-3
+        input(type='text',id='tx_hash',name='tx_hash',data-ng-model='newPayment.tx_hash')
+      
+      
+    div.row
+      div.col-sm-12
+        p &nbsp;
+    div.row
+      div.col-sm-12
+        input(type='submit',value='Pay Now')

@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport',content='width=device-width, initial-scale=1')
+    title= title
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css')
+    link(rel='stylesheet', href='//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css')
+    link(href='/assets/css/site.css', media='all', rel='stylesheet', type='text/css')
+    script(type='text/javascript',src='//code.jquery.com/jquery.js')
+    script(src='//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js')
+  body.home
+    #page
+      #header: header#masthead(role='banner'): .site-branding: .container: .row
+        h1 $ PayTime
+      #content.site-content: #primary.content-area: main#main.site-main: article: .entry-content.container: .row
+        block content
+      #copyright.
+        © 2014
+    
+    script(type='text/javascript',src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js')
+    script(type='text/javascript',src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.js')
+    script(type='text/javascript',src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.js')
+    script(type='text/javascript',src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.js')
+    script(type='text/javascript',src='/assets/app/main.js')
+    script(type='text/javascript',src='/assets/app/controllers/index.js')
+    script(type='text/javascript',src='/assets/app/services/context.js')
+    script(type='text/javascript',src='/assets/app/factories/models.js')
+    

@@ -1,0 +1,9 @@
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# config files #
+################
+config.json

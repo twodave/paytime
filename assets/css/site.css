@@ -1,0 +1,40 @@
+p, ul, ol{font-size:1.3em;}
+
+h1, h2, h3{font-family: "segoe ui",sans-serif; font-style: normal;}
+h1{ color:White;}
+h2{font-weight: 100; color: #0866AF; text-transform: uppercase;}
+h3,h4{color:#08375B; }
+body {background-color: #0866AF;}
+
+a {color:#228CDE;}
+a:hover{color:#0866AF;}
+label { font-size:14px;}
+.site-main {padding: 2% 0;}
+.home .site-main {padding: 5% 0; padding-top:2%;}
+#copyright{color: #ffffff; text-align: center; padding: 1%; background-color: #08375B; font-size: 1em;}
+#header { background-color: #0866AF; margin-top: 10px; padding-top: 10px; }
+.site-branding { background-color: #228CDE;  padding-bottom: 10px; }
+
+#page { background-color: #fff; }
+
+@media (max-width: 1199px) {
+}
+
+@media (max-width: 991px) {
+}
+
+@media (max-width: 767px) {
+
+	h1 {
+		font-size: 1.8em;
+	}
+  
+	p {font-size: 1em;}
+  #content{padding:0 5px;}
+}
+
+@media (max-width: 400px) {
+  img {width: 100%;}
+}
+
+div[class*='col-']{margin-bottom:3px;}
