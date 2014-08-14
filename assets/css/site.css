@@ -39,4 +39,4 @@ label { font-size:14px;}
 div[class*='col-']{margin-bottom:3px;}
 
 .info { border-radius:.3em;padding:.5em;background:#0866AF; color:white; }
-.error { border-radius:.3em;padding:.5em;background:rgba(255,200,200,.5) }
+.error { border-radius:.3em;padding:.5em;background:#A00; color:white; }
