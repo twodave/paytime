@@ -3,7 +3,6 @@ var app        = express();
 var bodyParser = require('body-parser');
 var path = require("path");
 
-
 // below are local imports
 
 // route public-facing requests

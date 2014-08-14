@@ -13,10 +13,9 @@ module.exports = {
 	getOne: function(req,res){
 	  var query = { _id: req.params.invoice_id };
 		Invoice.findOne(query, function(err,invoice){
-			if (err)
-				res.send(err);
-        invoice.private_key = null; // gotta scrub this
-				res.json(invoice);
+			if (err) res.send(err);
+      invoice.private_key = null; // gotta scrub this
+      res.json(invoice);
 		});
 	},
 	post: function(req,res){

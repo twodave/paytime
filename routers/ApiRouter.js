@@ -1,5 +1,6 @@
 var qr = require('qr-image');
-
+var http = require('http');
+var Invoice = require('../models/Invoice');
 module.exports = {
   setup: function(express, app, handlers){
     var apiRouter = express.Router();
@@ -16,7 +17,56 @@ module.exports = {
       
     });
 
-    
+    apiRouter.put('/verify/:invoice_id/:payment_id', function (req,res) {
+      var query = { _id: req.params.invoice_id };
+      Invoice.findOne(query, function(err,invoice){
+        if (err) {
+          res.send(err);
+        }
+        console.log('found invoice');
+        for(var k = 0; k < invoice.payments.length; k++) {
+          var payment = invoice.payments[k];
+          if (payment._id != req.params.payment_id) continue;
+          console.log('found payment');
+          if (!payment){
+            res.json({error: "payment not found."});
+          }
+          var toAddress = payment.address_used;
+          var fromAddress = payment.payer_address;
+          
+          console.log('verifying from: ' + fromAddress + ', to: ' + toAddress);
+          // ok lets grab a json blob
+          http.get("http://blockchain.info/address/"+fromAddress+"?format=json", function(response){
+            var body = "";
+            response.on('data',function(chunk) {
+              body += chunk;
+            });
+            response.on('end',function(){
+              var data = JSON.parse(body);
+              var txs = data.txs;
+              if (txs){
+                for(var i = 0; i < txs.length;i++){
+                  var tx = txs[i];
+                  if (tx.out){
+                    for(var j = 0; j < tx.out.length; j++){
+                      if (j.spent && j.value == payment.amount_in_satoshis && j.addr == payment.toAddress){
+                        payment.verified = true;
+                        payment.save(function(err,payment){
+                          if (err) res.send(err);
+                          res.json({ message: 'Payment verified.' });
+                          return;
+                        });
+                      }
+                    }
+                  }
+                }
+              }
+              res.json({ error: 'Payment not verified' });
+            });
+          });
+        }
+      });
+    });
     apiRouter.get('/qr/:code', function(req, res) {
       var code = qr.image(req.params.code, {type: 'svg'});
       res.type('svg');
