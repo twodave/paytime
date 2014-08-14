@@ -1,3 +1,5 @@
+var qr = require('qr-image');
+
 module.exports = {
   setup: function(express, app, handlers){
     var apiRouter = express.Router();
@@ -14,25 +16,26 @@ module.exports = {
       
     });
 
-    // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-    apiRouter.get('/', function(req, res) {
-      res.render('index',{title:'API Info'});
+    
+    apiRouter.get('/qr/:code', function(req, res) {
+      var code = qr.image(req.params.code, {type: 'svg'});
+      res.type('svg');
+      code.pipe(res);
     });
 
     apiRouter.route('/invoices')
       .get(handlers.invoice.getAll)
       .post(handlers.invoice.post);
 
-    apiRouter.route('/invoice/:invoice_id')
+    apiRouter.route('/invoices/:invoice_id')
     .get(handlers.invoice.getOne)
-    .put(handlers.invoice.put)
     .delete(handlers.invoice.delete);
 
-    apiRouter.route('/invoice/:invoice_id/payments')
+    apiRouter.route('/invoices/:invoice_id/payments')
     .post(handlers.payment.post)
     .get(handlers.payment.getAll);
 
-    apiRouter.route('/invoice/:invoice_id/payments/:payment_id')
+    apiRouter.route('/invoices/:invoice_id/payments/:payment_id')
     .get(handlers.payment.getOne)
     .delete(handlers.payment.delete);
 

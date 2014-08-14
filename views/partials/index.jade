@@ -9,15 +9,10 @@ div.new-invoice(ng-hide='invoice')
       div.col-xs-3
         label(for='expires_at') Expy
       div.col-sm-3
-        input(type='text',id='expires_at',name='expires_at',data-ng-model='newInvoice.expires_at',jqdatepicker='')
-    div.row
-      div.col-xs-3
-        label(for='wif') WIF
-      div.col-sm-3
-        input(type='text' disabled, placeholder='Using server wallet')
+        input(type='date',id='expires_at',name='expires_at',data-ng-model='newInvoice.expires_at')
     div.row
       div.col-sm-12
-        p &nbsp;
+        span &nbsp;
     div.row
       div.col-sm-12
         input(type='button',value='Create Invoice',ng-click='createInvoice()')
@@ -30,14 +25,24 @@ div.invoice-info(ng-show='invoice')
     div.col-sm-2
       span {{ invoice.created_utc | date }} 
     div.col-xs-2
-      strong Total (USD/Satoshis)
+      strong Total
     div.col-sm-2
-      span {{ invoice.total | currency }} / {{ getSatoshis(invoice.total) | number }}
+      span {{ invoice.total | currency }} ({{ (getSatoshis(invoice.total) | number) || 0 }} Satoshis)
     div.col-xs-2
-      strong Balance (USD/Satoshis)
+      strong Balance
     div.col-sm-2
-      span {{ invoice.getBalance() | currency }} / {{ getSatoshis(invoice.getBalance()) | number }}
-div.make-payment
+      span {{ invoice.getBalance() | currency }} ({{ (getSatoshis(invoice.getBalance()) | number) || 0 }} Satoshis)      
+  div.row
+    div.col-xs-2
+      strong Address
+    div.col-sm-5
+      span {{ invoice.current_address }}
+    div.col-xs-4
+      img(ng-show='invoice.current_address',ng-src='/api/qr/{{invoice.current_address}}',width='64px')
+  div.row
+    div.col-xs-12
+      input(type='button',value='Trash Invoice',ng-click='trashInvoice()')
+div.make-payment(ng-show='validInvoice()')
   h3 Make a payment
   div.container.well
     div.row
@@ -45,15 +50,42 @@ div.make-payment
         label(for='amount') Amount
       div.col-sm-3
         input(type='text',id='amount',name='amount',data-ng-model='newPayment.amount',decimal-input)
+      div.col-sm-6
+    div.row
       div.col-xs-3
-        label(for='tx_hash') Tx Hash
       div.col-sm-3
-        input(type='text',id='tx_hash',name='tx_hash',data-ng-model='newPayment.tx_hash')
-      
-      
+        span {{ ' ' }}({{ (getSatoshis(newPayment.amount) | number) || 0 }} Satoshis)
+    div.row
+      div.col-xs-3
+        label(for='tx_hash') TxHash
+      div.col-sm-9
+        input(type='text',id='tx_hash',name='tx_hash',data-ng-model='newPayment.tx_hash',style='width:500px')
     div.row
       div.col-sm-12
         p &nbsp;
     div.row
       div.col-sm-12
-        input(type='submit',value='Pay Now')
+        input(type='submit',value='Pay Now',ng-click='submitPayment()')
+        span {{' '}} 1 BitCoin = ${{ 1 / (getSatoshis(1) / 100000000) || '...' | number:2 }} USD
+div.payment-history(ng-show='invoice')
+  h3 Payment History
+  div.container
+    div.row
+      div.col-xs-3
+        label Date
+      div.col-xs-3
+        label Address
+      div.col-xs-3
+        label Amount
+      div.col-xs-3
+        label Balance
+  div.container(ng-repeat='payment in invoice.payments')
+    div.row
+      div.col-xs-3
+        {{ payment.timestamp | date }}
+      div.col-xs-3
+        img(ng-show='invoice.current_address',ng-src='/api/qr/{{payment.address_used}}',width='64px')
+      div.col-xs-3
+        {{ payment.amount | currency }}
+      div.col-xs-3
+        {{ getRunningBalance($index) | currency }}

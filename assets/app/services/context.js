@@ -27,4 +27,6 @@
         this.destroy = function (path, params) {
             return new API(path).destroy(params);
         }
+        
+        this.API = API;
     }]);

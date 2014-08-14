@@ -5,7 +5,8 @@ var InvoiceSchema = new mongoose.Schema({
   display_name: String,
   created_utc: { type: Date, default:Date.now },
   expires_at: Date,
-  total: Number,
+  total: Number, // USD
+  private_key: String,
   current_address: String,
   payments: [Payment.schema]
 });

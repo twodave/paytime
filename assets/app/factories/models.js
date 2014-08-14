@@ -1,7 +1,9 @@
 ﻿var crunchrModels = angular.module('crunchr.models', []).
   factory('models', ['apiService', '$filter', function (apiService,$filter) {
       Array.prototype.sum = function(property){
-        return this.reduce(function(t,c,i,a) { return t + c[property]; }, 0);
+        return this.reduce(function(t,c,i,a) { 
+          return t + parseFloat(c[property]);
+        }, 0.0);
       }
       
       var models = {};
@@ -38,16 +40,17 @@
           this.created_utc = new Date();
           this.expires_at = null;
           this.total = 0.00;
+          this.passphrase = "";
           this.payments = [];
           
           this.getBalance = function() {
-            var totalPayments = this.payments.sum('amount') | 0;
+            var totalPayments = parseFloat(this.payments.sum('amount')) || 0.0;
             return this.total - totalPayments;
           }
           this.getStatus = function() {
             if (this.getBalance() == 0) {
               return "Invoice Paid";
-            } else if (new Date() > expires_at) {
+            } else if (new Date() > new Date(this.expires_at)) {
               return "Expired";
             } else if (this.getBalance() != this.total) {
               return "Partially Paid";
@@ -60,7 +63,6 @@
       }
 
       models.api.Invoice.path = function () { return "/api/invoices/:invoice_id"; }
-
       models.api.Invoice.query = function (params) { return apiService.query(models.api.Invoice.path(), models.api.Invoice, params); }
 
       models.api.Invoice.prototype.save = function (callback) {
@@ -71,13 +73,14 @@
           }
       };
       
-      models.api.Invoice.prototype.destroy = function (callback) { return apiService.destroy(models.api.Invoice.path(), this._id); };
+      models.api.Invoice.prototype.destroy = function (callback) { return apiService.destroy(models.api.Invoice.path(), {invoice_id: this._id}); };
       // end Invoice
       
       // begin Payment
       models.api.Payment = function (serverPayment) {
           this.timestamp = new Date();
           this.amount = 0.00;
+          this.amount_in_satoshis = 0;
           angular.extend(this, serverPayment);
       }
 

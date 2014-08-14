@@ -1,6 +1,6 @@
 module.exports = {
   setup: function(express, app){
-
+       
     var viewRouter = express.Router();
         
     viewRouter.get('/', function(req, res) {
