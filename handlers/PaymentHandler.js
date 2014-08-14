@@ -45,25 +45,17 @@ module.exports = {
         return;
       }
       
-      // make the payment
-      var key = bitcoin.ECKey.fromWIF(invoice.private_key);
-      var tx = new bitcoin.Transaction();
-      console.log(payment.tx_hash);
-      tx.addInput(payment.tx_hash, 0);
-      tx.addOutput(address, payment.amount_in_satoshis);
-      tx.sign(0, key);
-      
-      // tx.toHex();
-      // to make live, push to: https://blockchain.info/pushtx
-      
       // log stuff
       payment.private_key = invoice.private_key;
       payment.address_used = address;
 			
       // new key/address combo needed
       var newKey = bitcoin.ECKey.makeRandom();
-      invoice.current_address = newKey.pub.getAddress().toString(); // not sure if this is different each time
+      invoice.current_address = newKey.pub.getAddress().toString();
       invoice.private_key = newKey.toWIF();
+      
+      // ok let's push the payment on and save it as unverified.. we'll verify later I guess
+      payment.verified = false;
       invoice.payments.push(payment);
       
 			invoice.save(function(err, invoice){

@@ -81,6 +81,9 @@
           this.timestamp = new Date();
           this.amount = 0.00;
           this.amount_in_satoshis = 0;
+          this.payer_address = "";
+          this.verified = false;
+          
           angular.extend(this, serverPayment);
       }
 

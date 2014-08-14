@@ -6,7 +6,8 @@ var PaymentSchema = new mongoose.Schema({
   amount_in_satoshis: Number,
   address_used: String,
   private_key: String,
-  tx_hash: String
+  payer_address: String,
+  verified: Boolean
 });
 
 var Payment = mongoose.model('Payment', PaymentSchema);

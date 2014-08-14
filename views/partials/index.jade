@@ -61,9 +61,9 @@ div.make-payment(ng-show='validInvoice()')
         span {{ ' ' }}({{ (getSatoshis(newPayment.amount) | number) || 0 }} Satoshis)
     div.row
       div.col-xs-3
-        label(for='tx_hash') TxHash
+        label(for='payer_address') Payer Address
       div.col-sm-9
-        input(type='text',id='tx_hash',name='tx_hash',data-ng-model='newPayment.tx_hash',style='width:500px')
+        input(type='text',id='payer_address',name='payer_address',data-ng-model='newPayment.payer_address')
     div.row
       div.col-sm-12
         p &nbsp;
@@ -75,21 +75,25 @@ div.payment-history(ng-show='invoice')
   h3 Payment History
   div.container
     div.row
-      div.col-xs-3
+      div.col-xs-2
         label Date
       div.col-xs-3
         label Address
-      div.col-xs-3
+      div.col-xs-2
         label Amount
-      div.col-xs-3
+      div.col-xs-2
         label Balance
+      div.col-xs-3
+        label Verified?
   div.container(ng-repeat='payment in invoice.payments')
     div.row
-      div.col-xs-3
+      div.col-xs-2
         {{ payment.timestamp | date }}
       div.col-xs-3
         img(ng-show='invoice.current_address',ng-src='/api/qr/{{payment.address_used}}',width='64px')
-      div.col-xs-3
+      div.col-xs-2
         {{ payment.amount | currency }}
-      div.col-xs-3
+      div.col-xs-2
         {{ getRunningBalance($index) | currency }}
+      div.col-xs-3
+        {{ payment.verified ? 'yes' : 'no' }}
