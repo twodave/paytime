@@ -29,19 +29,19 @@ module.exports = {
       var totalPayments = payment.amount + invoice.payments.reduce(function(t,c,i,a) { return t + c['amount']; }, 0);
       
       if (payment.amount <= 0) {
-        res.json({message: 'Payment rejected (too low)'});
+        res.json({error: 'Payment rejected (too low)'});
         return;
       }
       
       if (totalPayments > invoice.total){
-        res.json({ message: 'Payment rejected (too high)'});
+        res.json({ error: 'Payment rejected (too high)'});
         return;
       }
       console.log(invoice.expires_at);
       console.log(new Date(Date.now()));
       console.log(invoice.expires_at < new Date(Date.now()));
       if (invoice.expires_at < new Date(Date.now())) {
-        res.json({ message: 'Payment rejected (invoice expired)'});
+        res.json({ error: 'Payment rejected (invoice expired)'});
         return;
       }
       

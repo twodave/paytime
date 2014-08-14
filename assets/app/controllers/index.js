@@ -11,16 +11,36 @@ appRoot.controller('IndexController', ['$scope', '$resource', '$rootScope', '$ti
       });
   }
   
+  $scope.flashInfo = "";
+  $scope.flashError = "";
+    
   $scope.createInvoice = function() {
+    $scope.flashInfo = "";
+    $scope.flashError = "";
     $scope.newInvoice.expires_at = new Date($scope.newInvoice.expires_at);
-    $scope.newInvoice.save();
-    $scope.newInvoice = new models.api.Invoice();
-    $scope.getInvoices();
+    $scope.newInvoice.save().$promise.then(function(data){
+      if (data && data.error) {
+        $scope.flashError = data.error;
+      }
+      if (data && data.message) {
+        $scope.flashInfo = data.message;
+      }
+      $scope.newInvoice = new models.api.Invoice();
+      $scope.getInvoices();
+    });;
   }
   
   $scope.submitPayment = function() {
+    $scope.flashInfo = "";
+    $scope.flashError = "";
     $scope.newPayment.amount_in_satoshis = $scope.getSatoshis($scope.newPayment.amount);
-    $scope.newPayment.save($scope.invoice).$promise.then(function(){
+    $scope.newPayment.save($scope.invoice).$promise.then(function(data){
+      if (data && data.error) {
+        $scope.flashError = data.error;
+      }
+      if (data && data.message) {
+        $scope.flashInfo = data.message;
+      }
       $scope.newPayment = new models.api.Payment();
       $scope.getInvoices();
     });
