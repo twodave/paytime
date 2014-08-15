@@ -23,47 +23,66 @@ module.exports = {
         if (err) {
           res.send(err);
         }
-        console.log('found invoice');
-        for(var k = 0; k < invoice.payments.length; k++) {
-          var payment = invoice.payments[k];
-          if (payment._id != req.params.payment_id) continue;
-          console.log('found payment');
-          if (!payment){
-            res.json({error: "payment not found."});
-          }
-          var toAddress = payment.address_used;
-          var fromAddress = payment.payer_address;
-          
-          console.log('verifying from: ' + fromAddress + ', to: ' + toAddress);
-          // ok lets grab a json blob
-          http.get("http://blockchain.info/address/"+fromAddress+"?format=json", function(response){
-            var body = "";
-            response.on('data',function(chunk) {
-              body += chunk;
-            });
-            response.on('end',function(){
-              var data = JSON.parse(body);
-              var txs = data.txs;
-              if (txs){
-                for(var i = 0; i < txs.length;i++){
-                  var tx = txs[i];
-                  if (tx.out){
-                    for(var j = 0; j < tx.out.length; j++){
-                      if (j.spent && j.value == payment.amount_in_satoshis && j.addr == payment.toAddress){
-                        payment.verified = true;
-                        payment.save(function(err,payment){
-                          if (err) res.send(err);
-                          res.json({ message: 'Payment verified.', verified: true });
+        
+        if (invoice && invoice.payments){
+          console.log('found invoice w/ payments');
+          var paymentFound = false;
+          for(var k = 0; k < invoice.payments.length; k++) {
+            var payment = invoice.payments[k];
+            if (payment._id != req.params.payment_id) continue;
+            
+            if (!payment){
+              res.json({error: "payment not found."});
+            }
+            
+            console.log('found payment');
+            paymentFound = true;
+            
+            var toAddress = payment.address_used;
+            var fromAddress = payment.payer_address;
+            
+            var verifyPath = "http://blockchain.info/address/"+fromAddress+"?format=json";
+            console.log('verifying from: ' + fromAddress + ', to: ' + toAddress);
+            console.log('network path: ' + verifyPath);
+            // ok lets grab a json blob
+            http.get(verifyPath, function(response){
+              var body = "";
+              response.on('data',function(chunk) {
+                body += chunk;
+              });
+              response.on('end',function() {
+                var data = JSON.parse(body);
+                var txs = data.txs;
+                if (txs) {
+                  for(var i = 0; i < txs.length;i++) {
+                    var tx = txs[i];
+                    if (tx.out){
+                      for(var j = 0; j < tx.out.length; j++) {
+                        if (j.spent && j.value == payment.amount_in_satoshis && j.addr == payment.toAddress) {
+                          payment.verified = true;
+                          payment.save(function(err,payment) {
+                            if (err) res.send(err);
+                            res.json({ message: 'Payment verified.', verified: true });
+                            return;
+                          });
+                        } else {
+                          res.json({ message: 'Payment not verified', verified: false });
                           return;
-                        });
+                        }
                       }
                     }
                   }
+                } else{
+                  res.json({ message: 'Payment not verified', verified: false });
+                  return;
                 }
-              }
-              res.json({ message: 'Payment not verified', verified: false });
+              });
             });
-          });
+          }
+          res.json({ message: 'Payment not verified', verified: false });
+          return;
+        }else{
+          res.json({ message: 'Payment not verified', verified: false });
         }
       });
     });
