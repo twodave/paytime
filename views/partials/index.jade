@@ -1,7 +1,7 @@
 div.flash.error(ng-show='flashError')
-  {{ flashError }}
+  span {{ flashError }}
 div.flash.info(ng-show='flashInfo')
-  {{ flashInfo }}
+  span {{ flashInfo }}
 div.new-invoice(ng-hide='invoice')
   h3 Create an invoice
   div.container.well
@@ -86,18 +86,18 @@ div.payment-history(ng-show='invoice')
       div.col-xs-2
         label Balance
       div.col-xs-2
-        label Verified?
+        label Status
   div.container(ng-repeat='payment in invoice.payments')
     div.row
       div.col-xs-2
-        {{ payment.timestamp | date }}
+        span {{ payment.timestamp | date }}
       div.col-xs-2
         img(ng-show='invoice.current_address',ng-src='/api/qr/{{payment.payer_address}}',width='64px')
       div.col-xs-2
         img(ng-show='invoice.current_address',ng-src='/api/qr/{{payment.address_used}}',width='64px')
       div.col-xs-2
-        {{ payment.amount | currency }}
+        span {{ payment.amount | currency }}
       div.col-xs-2
-        {{ getRunningBalance($index) | currency }}
+        span {{ getRunningBalance($index) | currency }}
       div.col-xs-2
-        {{ payment.verified ? 'yes' : 'no' }}
+        span(ng-class='{ verified: payment.verified }') {{ payment.verified ? 'Verified' : 'Verifying...' }}

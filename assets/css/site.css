@@ -40,3 +40,4 @@ div[class*='col-']{margin-bottom:3px;}
 
 .info { border-radius:.3em;padding:.5em;background:#0866AF; color:white; }
 .error { border-radius:.3em;padding:.5em;background:#A00; color:white; }
+.verified { font-weight:bold;color:#0A0; }

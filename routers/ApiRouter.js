@@ -53,7 +53,7 @@ module.exports = {
                         payment.verified = true;
                         payment.save(function(err,payment){
                           if (err) res.send(err);
-                          res.json({ message: 'Payment verified.' });
+                          res.json({ message: 'Payment verified.', verified: true });
                           return;
                         });
                       }
@@ -61,7 +61,7 @@ module.exports = {
                   }
                 }
               }
-              res.json({ error: 'Payment not verified' });
+              res.json({ message: 'Payment not verified', verified: false });
             });
           });
         }

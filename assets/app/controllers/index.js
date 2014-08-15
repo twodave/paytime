@@ -6,6 +6,7 @@ appRoot.controller('IndexController', ['$scope', '$resource', '$rootScope', '$ti
   $scope.flashInfo = "";
   $scope.flashError = "";
   $scope.oneDollarInSatoshis = 0;
+  $scope.verificationTimer = {};
   
   // helpers
   $scope.validInvoice = function(){
@@ -36,13 +37,35 @@ appRoot.controller('IndexController', ['$scope', '$resource', '$rootScope', '$ti
     return bal;
   }
   
+  $scope.isVerified = function(index){
+    return $scope.invoice.payments[index].verified;
+  }
+  
   //api calls
-    $scope.getInvoices = function () {
+  $scope.getInvoices = function () {
     return models.api.Invoice.query().then(function (data) {
       if (data.length > 0) {
         $scope.invoice = data[0];
       }
     });
+  }
+  
+  $scope.validatePayments = function(){
+    if ($scope.invoice && $scope.invoice.payments){
+      angular.forEach($scope.invoice.payments, function (payment) {
+        if (!payment.verified) {
+          var apiPayment = new models.api.Payment(payment);
+          apiPayment.verify($scope.invoice).then(function(verified){
+            if (verified) {
+              // this should cause the page to update
+              payment.verified = true;
+            }
+          });
+        }
+      });
+    }
+    // after first try, check again every 15 seconds
+    $scope.verificationTimer = $timeout($scope.validatePayments, 15000);
   }
   
   $scope.createInvoice = function() {
@@ -89,9 +112,13 @@ appRoot.controller('IndexController', ['$scope', '$resource', '$rootScope', '$ti
   // startup
   var init = function() {
     $scope.getInvoices();
-    
     getConversionRate();
+    $scope.verificationTimer = $timeout($scope.validatePayments, 2000);
   };
+  
+  $scope.$on("$destroy", function(evt) {
+    $timeout.cancel($scope.verificationTimer);
+  });
   
   init();
 }]);

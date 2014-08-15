@@ -1,5 +1,5 @@
 ﻿var crunchrModels = angular.module('crunchr.models', []).
-  factory('models', ['apiService', '$filter', function (apiService,$filter) {
+  factory('models', ['apiService', '$filter', '$resource', function (apiService,$filter, $resource) {
       Array.prototype.sum = function(property){
         return this.reduce(function(t,c,i,a) { 
           return t + parseFloat(c[property]);
@@ -88,9 +88,23 @@
       }
 
       models.api.Payment.path = function () { return "/api/invoices/:invoice_id/payments/:payment_id"; }
+      models.api.Payment.verifyPath = function () { return "/api/verify/:invoice_id/:payment_id"; }
 
       models.api.Payment.query = function (params) { return apiService.query(models.api.Payment.path(), models.api.Payment, params); }
-
+      models.api.Payment.prototype.verify = function(invoice) {
+        // don't really want to munge with the apiService here, so let's just throw it together with $resource
+        var api = $resource(models.api.Payment.verifyPath(), {}, { verify: { method: 'PUT' } });
+        var params = {invoice_id: invoice._id, payment_id: this._id};
+        var promise = api.verify(params, this).$promise.then(function(data){
+          if (data){
+            if (data.verified){
+              return true;
+            }
+          }
+          return false;
+        });
+        return promise;
+      }
       models.api.Payment.prototype.save = function (invoice) {
           if (this._id) {
               return apiService.update(models.api.Payment.path(), {invoice_id: invoice._id, payment_id: this._id}, this);
