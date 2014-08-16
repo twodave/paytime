@@ -20,7 +20,6 @@ div.new-invoice(ng-hide='invoice')
     div.row
       div.col-sm-12
         input(type='button',value='Create Invoice',ng-click='createInvoice()')
-
 div.invoice-info(ng-show='invoice')
   h3 Invoice ({{ invoice.getStatus() }})
   div.row

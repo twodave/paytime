@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var config = null;
 
 try {
-  config = require('../config.json');
+  config = require('../config');
 }
 catch(err) { }
 

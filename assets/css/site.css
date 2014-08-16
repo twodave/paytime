@@ -9,9 +9,9 @@ body {background-color: #0866AF;}
 a {color:#228CDE;}
 a:hover{color:#0866AF;}
 label { font-size:14px;}
-.site-main {padding: 2% 0;}
+
 .home .site-main {padding: 5% 0; padding-top:2%;}
-#copyright{color: #ffffff; text-align: center; padding: 1%; background-color: #08375B; font-size: 1em;}
+#copyright{color: #ffffff; text-align: center; padding: 1% 0; background-color: #08375B; font-size: 1em;}
 #header { background-color: #0866AF; margin-top: 10px; padding-top: 10px; }
 .site-branding { background-color: #228CDE;  padding-bottom: 10px; }
 
@@ -30,7 +30,7 @@ label { font-size:14px;}
 	}
   
 	p {font-size: 1em;}
-  #content{padding:0 5px;}
+  
 }
 
 @media (max-width: 400px) {
