@@ -1,6 +1,12 @@
 # PayTime
 
-OK, head on over to [http://autojson.com/](http://autojson.com/) for a demo whenever you're ready.
+PayTime is a proof-of-concept bitcoin invoice web application. 
+
+## Demo
+
+To work with a demo, go to: [http://autojson.com/](http://autojson.com/).
+
+** NOTE: do NOT use the demo for any real transactions (unless you wish to donate to the author, of course).
 
 ## Deployment instructions
 
