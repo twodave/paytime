@@ -31,3 +31,11 @@ module.exports = config;
 ```
 
 The config.js is not required.
+
+## Known issues
+
+1. Only one invoice is supported at a time, and invoices can be trashed at any time, which will also destroy any payment records (and their private keys).
+2. Transactions are both double-entered and "lazy verified" at the moment, which isn't optimal. A better way would be to monitor the payment address on the blockchain for activity and auto-create the payment.
+3. Another by-product of #2, payments are not guaranteed to be anonymous. By collecting data via the web app, the server could possibly associate a public IP and date with a payment. If subpoenaed, this could lead to revealing the payer's identity.
+4. Payment addresses that are no longer being monitored are still displayed on the screen after payment is made. This could result in un-collected payments.
+
