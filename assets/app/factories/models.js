@@ -1,8 +1,12 @@
 ﻿var crunchrModels = angular.module('crunchr.models', []).
   factory('models', ['apiService', '$filter', '$resource', function (apiService,$filter, $resource) {
-      Array.prototype.sum = function(property){
+      Array.prototype.sum = function(property, conditionCallback){
         return this.reduce(function(t,c,i,a) { 
-          return t + parseFloat(c[property]);
+          if (!conditionCallback(c)){
+            return t;
+          }else {
+            return t + parseFloat(c[property]);
+          }
         }, 0.0);
       }
       
@@ -44,7 +48,7 @@
           this.payments = [];
           
           this.getBalance = function() {
-            var totalPayments = parseFloat(this.payments.sum('amount')) || 0.0;
+            var totalPayments = parseFloat(this.payments.sum('amount', function(element){ return element['verified']; })) || 0.0;
             return this.total - totalPayments;
           }
           this.getStatus = function() {
